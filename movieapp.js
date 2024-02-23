@@ -24,6 +24,7 @@ const myMoviesList = [
     watched: false,
   },
 ];
+// updateLocalStorage(myMoviesList)
 renderUI();
 
 const addMovieForm = document.querySelector("form");
@@ -51,6 +52,7 @@ addMovieForm.addEventListener("submit", (event) => {
     releaseDate: releaseInput,
     watched: false,
   });
+  updateLocalStorage(currentMovieList);
   renderUI();
   //add the movie div into the list
 });
@@ -93,12 +95,12 @@ function addMovieToList(name, category, releasedate, watchStatus) {
   //put the content from the form into the movie div
 }
 function markMovieAsWatched(event) {
-  console.log(event.target.getAttribute("data-movie-name"));
-  console.log("Button clicked");
-  let clickedMovie = myMoviesList.find(
+  let currentMovieList = JSON.parse(localStorage.getItem("myMovieList"));
+  let clickedMovie = currentMovieList.find(
     (movie) => movie.name === event.target.getAttribute("data-movie-name")
   );
   clickedMovie.watched = true;
+  updateLocalStorage(currentMovieList);
   renderUI();
 }
 
@@ -106,7 +108,8 @@ function markMovieAsWatched(event) {
 //render list
 function renderUI() {
   document.getElementById("my-list").innerHTML = "";
-  for (movie of myMoviesList) {
+  let updatedList = JSON.parse(localStorage.getItem("myMovieList"));
+  for (movie of updatedList) {
     addMovieToList(
       movie.name,
       movie.category,
@@ -114,6 +117,10 @@ function renderUI() {
       movie.watched
     );
   }
+}
+
+function updateLocalStorage(newArray) {
+  localStorage.setItem("myMovieList", JSON.stringify(newArray));
 }
 
 //passing by values vs passing by reference--how variables are stored in memory
